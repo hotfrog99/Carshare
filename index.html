@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarShare - Аренда автомобилей</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="https://cdn-icons-png.flaticon.com/128/48/48510.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header__inner">
+                <div class="logo">
+                    <img src="https://cdn-icons-png.flaticon.com/128/48/48510.png" alt="CarShare">
+                    <span class="logo__text">CarShare</span>
+                </div>
+                <nav class="nav">
+                    <a href="#booking" class="nav__link active">Бронирование</a>
+                    <a href="#advantages" class="nav__link">Преимущества</a>
+                    <a href="#contacts" class="nav__link">Контакты</a>
+                </nav>
+                <div class="header__phone">+7 (495) 123-45-67</div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <section class="booking" id="booking">
+            <div class="container">
+                <h1 class="booking__title">Бронирование автомобиля</h1>
+
+                <div class="booking__steps">
+                    <div class="step active" data-step="1">1. Выбор автомобиля</div>
+                    <div class="step" data-step="2">2. Дополнительные услуги</div>
+                    <div class="step" data-step="3">3. Контактные данные</div>
+                    <div class="step" data-step="4">4. Подтверждение</div>
+                </div>
+
+                <form class="booking-form" id="bookingForm">
+                    <div class="form-step active" id="step1">
+                        <h2>Выберите автомобиль</h2>
+                        <div class="map-container">
+                            <div id="map"></div>
+                        </div>
+                        <div class="cars-grid">
+                        </div>
+                        <div class="form-group">
+                            <label for="rentalPeriod">Период аренды:</label>
+                            <select id="rentalPeriod" name="rentalPeriod" required>
+                                <option value="">Выберите период</option>
+                                <option value="1">1 час</option>
+                                <option value="3">3 часа</option>
+                                <option value="6">6 часов</option>
+                                <option value="12">12 часов</option>
+                                <option value="24">1 сутки</option>
+                                <option value="72">3 суток</option>
+                                <option value="168">1 неделя</option>
+                            </select>
+                        </div>
+                        <button type="button" class="btn next-btn" onclick="nextStep(1)">Далее</button>
+                    </div>
+
+                    <div class="form-step" id="step2">
+                        <h2>Дополнительные услуги</h2>
+                        <div class="services-grid">
+                            <div class="service-option">
+                                <input type="checkbox" id="childSeat" name="childSeat" value="500">
+                                <label for="childSeat">
+                                    <h3>Детское кресло</h3>
+                                    <p>Безопасность вашего ребенка в поездке</p>
+                                    <div class="price">500 ₽</div>
+                                </label>
+                            </div>
+                            <div class="service-option">
+                                <input type="checkbox" id="insurance" name="insurance" value="1000" checked>
+                                <label for="insurance">
+                                    <h3>Полная страховка</h3>
+                                    <p>Покрытие всех рисков при аренде</p>
+                                    <div class="price">1000 ₽</div>
+                                </label>
+                            </div>
+                            <div class="service-option">
+                                <input type="checkbox" id="navigator" name="navigator" value="300">
+                                <label for="navigator">
+                                    <h3>Навигатор</h3>
+                                    <p>GPS навигация по городу</p>
+                                    <div class="price">300 ₽</div>
+                                </label>
+                            </div>
+                            <div class="service-option">
+                                <input type="checkbox" id="delivery" name="delivery" value="1500">
+                                <label for="delivery">
+                                    <h3>Доставка автомобиля</h3>
+                                    <p>Привезем автомобиль в удобное для вас место</p>
+                                    <div class="price">1500 ₽</div>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-navigation">
+                            <button type="button" class="btn prev-btn" onclick="prevStep(2)">Назад</button>
+                            <button type="button" class="btn next-btn" onclick="nextStep(2)">Далее</button>
+                        </div>
+                    </div>
+
+                    <div class="form-step" id="step3">
+                        <h2>Контактные данные</h2>
+                        <div class="form-group">
+                            <label for="fullName">ФИО:</label>
+                            <input type="text" id="fullName" name="fullName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Телефон:</label>
+                            <input type="tel" id="phone" name="phone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="driverLicense">Номер водительского удостоверения:</label>
+                            <input type="text" id="driverLicense" name="driverLicense" required>
+                        </div>
+                        <div class="form-navigation">
+                            <button type="button" class="btn prev-btn" onclick="prevStep(3)">Назад</button>
+                            <button type="button" class="btn next-btn" onclick="nextStep(3)">Далее</button>
+                        </div>
+                    </div>
+
+                    <div class="form-step" id="step4">
+                        <h2>Подтверждение бронирования</h2>
+                        <div class="summary">
+                            <h3>Детали бронирования:</h3>
+                            <div id="summaryDetails"></div>
+                            <div class="total-price">
+                                <strong>Итого к оплате:</strong>
+                                <span id="totalPrice">0 ₽</span>
+                            </div>
+                        </div>
+                        <div class="form-group checkbox">
+                            <input type="checkbox" id="agreeTerms" name="agreeTerms" required>
+                            <label for="agreeTerms">Я согласен с <a href="#">условиями аренды</a> и <a href="#">политикой конфиденциальности</a></label>
+                        </div>
+                        <div class="form-navigation">
+                            <button type="button" class="btn prev-btn" onclick="prevStep(4)">Назад</button>
+                            <button type="submit" class="btn submit-btn">Подтвердить бронирование</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <section class="advantages" id="advantages">
+            <div class="container">
+                <h2 class="section-title">Почему выбирают CarShare?</h2>
+
+                <div class="advantages-grid">
+                    <div class="advantage-card">
+                        <div class="advantage-icon">
+                            <img src="https://cdn-icons-png.flaticon.com/512/3144/3144456.png" alt="Экономия">
+                        </div>
+                        <h3>Экономия</h3>
+                        <p>Платите только за время использования автомобиля без затрат на содержание, страховку и парковку</p>
+                    </div>
+
+                    <div class="advantage-card">
+                        <div class="advantage-icon">
+                            <img src="https://cdn-icons-png.flaticon.com/512/2933/2933245.png" alt="Удобство">
+                        </div>
+                        <h3>Удобство</h3>
+                        <p>Бронируйте автомобиль через приложение или сайт, забирайте и возвращайте в любой удобной точке города</p>
+                    </div>
+
+                    <div class="advantage-card">
+                        <div class="advantage-icon">
+                            <img src="https://cdn-icons-png.flaticon.com/512/2913/2913100.png" alt="Выбор">
+                        </div>
+                        <h3>Разнообразие</h3>
+                        <p>Широкий выбор автомобилей - от компактных городских до премиальных моделей и электромобилей</p>
+                    </div>
+
+                    <div class="advantage-card">
+                        <div class="advantage-icon">
+                            <img src="https://cdn-icons-png.flaticon.com/512/2913/2913073.png" alt="Экология">
+                        </div>
+                        <h3>Экология</h3>
+                        <p>Снижаем нагрузку на экологию - один каршеринговый автомобиль заменяет 10 личных</p>
+                    </div>
+
+                    <div class="advantage-card">
+                        <div class="advantage-icon">
+                            <img src="https://cdn-icons-png.flaticon.com/512/2936/2936886.png" alt="Технологии">
+                        </div>
+                        <h3>Технологии</h3>
+                        <p>Инновационная платформа с функцией дистанционного открытия автомобиля через приложение</p>
+                    </div>
+
+                    <div class="advantage-card">
+                        <div class="advantage-icon">
+                            <img src="https://cdn-icons-png.flaticon.com/512/3143/3143479.png" alt="Поддержка">
+                        </div>
+                        <h3>Поддержка</h3>
+                        <p>Круглосуточная служба поддержки готова помочь в любой ситуации</p>
+                    </div>
+                </div>
+
+                <div class="testimonials">
+                    <h3>Отзывы наших клиентов</h3>
+                    <div class="testimonials-grid">
+                        <div class="testimonial">
+                            <div class="testimonial-text">
+                                "Очень удобный сервис! Часто пользуюсь для поездок по городу. Экономит время и деньги."
+                            </div>
+                            <div class="testimonial-author">
+                                <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="Иван">
+                                <div>
+                                    <strong>Иван С.</strong>
+                                    <div class="rating">★★★★★</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="testimonial">
+                            <div class="testimonial-text">
+                                "Отличное состояние автомобилей и понятные тарифы. Пользуюсь уже больше года, очень довольна!"
+                            </div>
+                            <div class="testimonial-author">
+                                <img src="https://randomuser.me/api/portraits/women/33.jpg" alt="Анна">
+                                <div>
+                                    <strong>Анна К.</strong>
+                                    <div class="rating">★★★★☆</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="testimonial">
+                            <div class="testimonial-text">
+                                "Удобно, что можно взять машину рядом с домом и оставить в другом районе. Сервис на высоте!"
+                            </div>
+                            <div class="testimonial-author">
+                                <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Дмитрий">
+                                <div>
+                                    <strong>Дмитрий П.</strong>
+                                    <div class="rating">★★★★★</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq">
+                    <h3>Часто задаваемые вопросы</h3>
+                    <div class="faq-item">
+                        <div class="faq-question">Как мне зарегистрироваться в системе?</div>
+                        <div class="faq-answer">
+                            <p>Для регистрации вам потребуется водительское удостоверение, паспорт и банковская карта. Заполните анкету на нашем сайте или в мобильном приложении, после чего мы проверим ваши данные (обычно это занимает не более 1 часа).</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">Где можно забрать и оставить автомобиль?</div>
+                        <div class="faq-answer">
+                            <p>Вы можете забрать и оставить автомобиль в любой из наших парковочных зон, которые отмечены на карте в приложении. Обратите внимание, что некоторые зоны могут быть платными в определенное время суток.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">Что делать, если я попал в аварию?</div>
+                        <div class="faq-answer">
+                            <p>В случае ДТП немедленно свяжитесь с нашей службой поддержки по телефону +7 (495) 123-45-67. Мы поможем оформить все необходимые документы и организуем эвакуацию автомобиля при необходимости.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="contacts" id="contacts">
+            <div class="container">
+                <h2 class="section-title">Контакты</h2>
+
+                <div class="contacts-grid">
+                    <div class="contact-info">
+                        <h3>Контактная информация</h3>
+                        <p><strong>Адрес:</strong> г. Москва, ул. Ленинская Слобода, 26 (Бизнес-центр "Омега")</p>
+                        <p><strong>Телефон:</strong> +7 (495) 123-45-67</p>
+                        <p><strong>Email:</strong> info@carshare.ru</p>
+                        <p><strong>Режим работы:</strong><br>
+                        Пн-Пт: 09:00 - 21:00<br>
+                        Сб-Вс: 10:00 - 20:00</p>
+
+                        <h3>Подпишитесь на нас</h3>
+                        <div class="social-links">
+                            <a href="#" class="social-link"><img src="https://cdn-icons-png.flaticon.com/512/2504/2504903.png" alt="VK"></a>
+                            <a href="#" class="social-link"><img src="https://cdn-icons-png.flaticon.com/512/2504/2504947.png" alt="Telegram"></a>
+                            <a href="#" class="social-link"><img src="https://cdn-icons-png.flaticon.com/512/2504/2504957.png" alt="Instagram"></a>
+                            <a href="#" class="social-link"><img src="https://cdn-icons-png.flaticon.com/512/2504/2504881.png" alt="YouTube"></a>
+                        </div>
+                    </div>
+
+                    <div class="contact-map">
+                        <div id="contactMap" style="height: 400px; border-radius: 8px;"></div>
+                    </div>
+                </div>
+
+                <div class="departments">
+                    <h3>Наши отделы</h3>
+                    <div class="departments-grid">
+                        <div class="department">
+                            <h4>Центральный офис</h4>
+                            <p>ул. Ленинская Слобода, 26<br>
+                            Телефон: +7 (495) 123-45-67</p>
+                        </div>
+                        <div class="department">
+                            <h4>Служба поддержки</h4>
+                            <p>Круглосуточно<br>
+                            Телефон: +7 (800) 123-45-67</p>
+                        </div>
+                        <div class="department">
+                            <h4>Техническая поддержка</h4>
+                            <p>Пн-Пт: 08:00-22:00<br>
+                            Телефон: +7 (495) 765-43-21</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="contact-form">
+                    <h3>Остались вопросы?</h3>
+                    <form id="questionForm">
+                        <div class="form-group">
+                            <input type="text" placeholder="Ваше имя" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" placeholder="Ваш email" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea placeholder="Ваш вопрос" rows="4" required></textarea>
+                        </div>
+                        <button type="submit" class="btn">Отправить</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__inner">
+                <div class="footer__col">
+                    <h3>Контакты</h3>
+                    <p>г. Москва, ул. Ленинская Слобода, 26</p>
+                    <p>+7 (495) 123-45-67</p>
+                    <p>info@carshare.ru</p>
+                </div>
+                <div class="footer__col">
+                    <h3>Часы работы</h3>
+                    <p>Пн-Пт: 09:00 - 21:00</p>
+                    <p>Сб-Вс: 10:00 - 20:00</p>
+                </div>
+                <div class="footer__col">
+                    <h3>Мы в соцсетях</h3>
+                    <div class="social-links">
+                        <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/2504/2504903.png" alt="ВКонтакте"></a>
+                        <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/2504/2504947.png" alt="Telegram"></a>
+                        <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/2504/2504957.png" alt="Instagram"></a>
+                    </div>
+                </div>
+                <div class="footer__col">
+                    <h3>Мобильное приложение</h3>
+                    <div class="app-links">
+                        <a href="#"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Download_on_the_App_Store_Badge.svg/2560px-Download_on_the_App_Store_Badge.svg.png" alt="App Store"></a>
+                        <a href="#"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Google_Play_Store_badge_EN.svg/2560px-Google_Play_Store_badge_EN.svg.png" alt="Google Play"></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="copyright">© 2025 CarShare. Все права защищены.</div>
+                <div class="footer-links">
+                    <a href="#">Политика конфиденциальности</a>
+                    <a href="#">Условия использования</a>
+                    <a href="#">Пользовательское соглашение</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="script.js"></script>
+    <script>
+
+        function nextStep(currentStep) {
+            if(currentStep === 1 && !validateStep(1)) return;
+            if(currentStep === 3 && !validateStep(3)) return;
+
+            document.getElementById('step' + currentStep).classList.remove('active');
+            document.getElementById('step' + (currentStep + 1)).classList.add('active');
+
+            document.querySelector('.step[data-step="' + currentStep + '"]').classList.remove('active');
+            document.querySelector('.step[data-step="' + (currentStep + 1) + '"]').classList.add('active');
+
+            if(currentStep + 1 === 4) {
+                updateSummary();
+            }
+        }
+
+        function prevStep(currentStep) {
+            document.getElementById('step' + currentStep).classList.remove('active');
+            document.getElementById('step' + (currentStep - 1)).classList.add('active');
+
+            document.querySelector('.step[data-step="' + currentStep + '"]').classList.remove('active');
+            document.querySelector('.step[data-step="' + (currentStep - 1) + '"]').classList.add('active');
+        }
+
+        function updateSummary() {
+            const car = document.querySelector('input[name="car"]:checked');
+            if (!car) {
+                alert('Пожалуйста, выберите автомобиль');
+                return false;
+            }
+
+            const carName = car.dataset.name;
+            const carPrice = car.dataset.price;
+            const rentalPeriod = document.getElementById('rentalPeriod').value;
+            const rentalPeriodText = document.getElementById('rentalPeriod').options[document.getElementById('rentalPeriod').selectedIndex].text;
+
+            let servicesTotal = 0;
+            let servicesHtml = '';
+            const services = document.querySelectorAll('input[type="checkbox"]:checked');
+
+            services.forEach(service => {
+                const serviceName = service.nextElementSibling.querySelector('h3').textContent;
+                const servicePrice = parseInt(service.value);
+                servicesTotal += servicePrice;
+                servicesHtml += `<p><strong>${serviceName}:</strong> ${servicePrice} ₽</p>`;
+            });
+
+            const basePrice = parseInt(carPrice) * parseInt(rentalPeriod);
+            const totalPrice = basePrice + servicesTotal;
+
+            const summaryHTML = `
+                <p><strong>Автомобиль:</strong> ${carName}</p>
+                <p><strong>Тариф:</strong> ${carPrice} ₽/час</p>
+                <p><strong>Период аренды:</strong> ${rentalPeriodText}</p>
+                <p><strong>Стоимость аренды:</strong> ${basePrice} ₽</p>
+                ${servicesHtml}
+            `;
+
+            document.getElementById('summaryDetails').innerHTML = summaryHTML;
+            document.getElementById('totalPrice').textContent = totalPrice + ' ₽';
+
+            return true;
+        }
+
+        document.querySelectorAll('.nav__link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                document.querySelectorAll('.nav__link').forEach(item => {
+                    item.classList.remove('active');
+                });
+
+                this.classList.add('active');
+
+                document.querySelectorAll('section').forEach(section => {
+                    section.style.display = 'none';
+                });
+
+                const targetId = this.getAttribute('href').substring(1);
+                document.getElementById(targetId).style.display = 'block';
+
+                if (targetId === 'contacts') {
+                    initContactMap();
+                }
+            });
+        });
+
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    if (!document.getElementById('agreeTerms').checked) {
+        alert('Пожалуйста, согласитесь с условиями аренды');
+        return;
+    }
+
+    alert('Бронирование успешно отправлено! Мы свяжемся с вами для подтверждения.');
+    this.reset();
+
+    document.querySelectorAll('.form-step').forEach(step => step.classList.remove('active'));
+    document.getElementById('step1').classList.add('active');
+
+    document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+    document.querySelector('.step[data-step="1"]').classList.add('active');
+
+    document.querySelectorAll('input[name="car"]').forEach(radio => {
+        radio.checked = false;
+    });
+});
+
+        function initContactMap() {
+            const contactMap = L.map('contactMap',  {
+        attributionControl: false
+    }).setView([55.751244, 37.618423], 13);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(contactMap);
+
+            L.marker([55.751244, 37.618423]).addTo(contactMap)
+                .bindPopup('Центральный офис CarShare')
+                .openPopup();
+        }
+
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const answer = question.nextElementSibling;
+                const isOpen = answer.style.display === 'block';
+
+                document.querySelectorAll('.faq-answer').forEach(item => {
+                    item.style.display = 'none';
+                });
+
+                if (!isOpen) {
+                    answer.style.display = 'block';
+                }
+            });
+        });
+
+        document.getElementById('booking').style.display = 'block';
+    </script>
+</body>
+</html>
